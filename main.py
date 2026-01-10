@@ -83,15 +83,31 @@ async def handler(event):
     match_name = check_match(event.message.raw_text)
     if match_name:
         chat = await event.get_chat()
+        chat_title = chat.title if chat else 'Unknown'
+        msg_id = event.id
+        channel_id = extract_channel_id(event.chat_id)
+        msg_link = f"https://t.me/c/{channel_id}/{msg_id}"
         
-        # Construct alert message
-        alert_text = (
-            f"**🚨 MATCH FOUND: {match_name}**\n\n"
-            f"**Source:** {chat.title if chat else 'Unknown'}\n"
-            f"**Link:** [Go to Message](https://t.me/c/{extract_channel_id(event.chat_id)}/{event.id})\n\n"
-            f"**Message:**\n{event.message.raw_text[:200]}..."
+        # Get template from config
+        template = config.get('alert_template', 
+            "**🚨 MATCH FOUND: {product_name}**\n\n"
+            "**Source:** {chat_title}\n"
+            "**Link:** [Go to Message]({message_link})\n\n"
+            "**Message:**\n{message_text}"
         )
-        
+
+        # Format alert message
+        try:
+            alert_text = template.format(
+                product_name=match_name,
+                chat_title=chat_title,
+                message_link=msg_link,
+                message_text=event.message.raw_text[:500] + ("..." if len(event.message.raw_text) > 500 else "")
+            )
+        except Exception as e:
+            print(f"Error formatting template: {e}. Using fallback.")
+            alert_text = f"Match: {match_name}\nLink: {msg_link}"
+
         # Send via Bot (Loud Notification)
         me = await client.get_me()
         if BOT_TOKEN:
