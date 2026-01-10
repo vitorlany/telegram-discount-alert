@@ -1,7 +1,7 @@
 import os
 import re
 import yaml
-import asyncio
+import aiohttp
 from telethon import TelegramClient, events
 from dotenv import load_dotenv
 
@@ -53,8 +53,6 @@ def check_match(text):
             return product['name']
     return None
 
-import aiohttp
-
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 async def send_via_bot(user_id, message):
@@ -84,7 +82,6 @@ async def handler(event):
 
     match_name = check_match(event.message.raw_text)
     if match_name:
-        sender = await event.get_sender()
         chat = await event.get_chat()
         
         # Construct alert message
