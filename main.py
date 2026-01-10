@@ -3,6 +3,7 @@ import re
 import yaml
 import aiohttp
 from telethon import TelegramClient, events
+from telethon.sessions import StringSession
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -11,6 +12,7 @@ load_dotenv()
 API_ID = os.getenv('TG_API_ID')
 API_HASH = os.getenv('TG_API_HASH')
 SESSION_NAME = os.getenv('TG_SESSION_NAME', 'discount_bot')
+STRING_SESSION = os.getenv('TG_STRING_SESSION')
 
 if not API_ID or not API_HASH:
     print("Error: TG_API_ID or TG_API_HASH not found in .env file.")
@@ -36,7 +38,12 @@ for ch in raw_channels:
 PRODUCTS = config.get('products', [])
 
 # Create the client and start it
-client = TelegramClient(SESSION_NAME, int(API_ID), API_HASH)
+if STRING_SESSION:
+    print("Using session string from environment.")
+    client = TelegramClient(StringSession(STRING_SESSION), int(API_ID), API_HASH)
+else:
+    print(f"Using session file: {SESSION_NAME}.session")
+    client = TelegramClient(SESSION_NAME, int(API_ID), API_HASH)
 
 def check_match(text):
     """
