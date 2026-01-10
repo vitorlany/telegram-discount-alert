@@ -1,10 +1,28 @@
 channels:
+  # Test channel
   - "-1003596110991"
+  - "-1001622757657"
+  - "-1001260857435"
+  - "-1001871700299"
+  - "-1002703722182"
+  - "-1001795013184"
+
+# Template placeholders: {product_name}, {chat_title}, {message_link}, {message_text}
+alert_template: |
+  **🚨 {product_name}**
+  {message_text}
+
+  **Source:** {chat_title}
+  **Link:** [Go to Message]({message_link})
 
 # Regex notes:
 # case_insensitive is assumed true in code logic unless specified otherwise
 products:
   - name: "Test Product"
-    regex: "oi"
+    regex: "$"
   - name: "RTX 5070"
     regex: "5070"
+  - name: "Logitech G923"
+    regex: "G923"
+  - name: "Whey"
+    regex: "Whey"
