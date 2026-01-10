@@ -1,22 +1,25 @@
 # 🎯 Telegram Discount Alert Bot
 
-A powerful, lightweight Telegram Userbot that monitors your channels for specific products and alerts you instantly via a dedicated Telegram Bot for push notifications.
+This bot monitors specific Telegram channels for product keywords and sends notifications via a dedicated Telegram Bot.
 
-## ✨ Features
+It acts as a bridge between channels you follow and your own notification bot, allowing for automated filtering of deal alerts.
 
-- **Real-time Monitoring**: Running on your own account, it sees everything you see.
-- **Regex Support**: Use powerful Regular Expressions to match exactly the deals you want.
-- **Push Notifications**: Uses the Telegram Bot API to send loud alerts to your phone (avoiding the silent "Saved Messages" limitation).
-- **Cloud Ready**: Supports String Sessions for easy deployment on Oracle Cloud, Railway, or VPS.
-- **Customizable**: Easy-to-edit `config.yml` for channels, products, and alert templates.
+---
 
-## 🚀 Quick Start
+## ⚙️ How it works
 
-### 1. Prerequisites
+- **Account Monitoring**: Operates via a Telegram Userbot, observing messages in joined channels.
+- **Filtering**: Matches message content against user-defined criteria in `config.yml` using string matching or Regular Expressions (Regex).
+- **Notifications**: Forwards matches to a separate Telegram Bot for instant delivery.
+- **Session Management**: Supports String Sessions for deployment on environments without persistent storage.
 
-- Python 3.8+
-- Telegram API Credentials (`api_id` and `api_hash`) from [my.telegram.org](https://my.telegram.org).
-- A Bot Token from [@BotFather](https://t.me/botfather).
+## 🛠️ Setup Guide
+
+### 1. Requirements
+
+- **Telegram Credentials**: `api_id` and `api_hash` from [my.telegram.org](https://my.telegram.org).
+- **Bot Token**: A token from [@BotFather](https://t.me/botfather).
+- **Python 3.8+**: Required for execution.
 
 ### 2. Installation
 
@@ -28,24 +31,29 @@ pip install -r requirements.txt
 
 ### 3. Configuration
 
-1. Rename `.env.example` to `.env`.
-2. Fill in your `TG_API_ID`, `TG_API_HASH`, and `BOT_TOKEN`.
-3. Open `config.yml` to add your channels and product regex:
+1. **Environment Variables**: Create a `.env` file from `.env.example` and insert your credentials.
+2. **Configuration File**: Define channels and products in `config.yml`:
    ```yaml
    channels:
      - "-10012345678" # Use list_channels.py to find IDs
    products:
-     - name: "GPU"
+     - name: "Next-gen GPU"
        regex: "RTX\\s*50[7-9]0"
    ```
 
-### 4. Run it
+### 4. Execution
 
 ```bash
 python main.py
 ```
 
-## 🛠️ Utility Scripts
+---
 
-- **`list_channels.py`**: Run this to see names and IDs of all channels you are in.
-- **`generate_string_session.py`**: Generates a `TG_STRING_SESSION` for cloud deployment (no more `.session` files needed!).
+## 💡 Utilities
+
+- `list_channels.py`: Displays names and IDs of channels your account is currently in.
+- `generate_string_session.py`: Generates a `TG_STRING_SESSION` for cloud deployment.
+
+---
+
+_Developed to automate keyword monitoring in Telegram channels._

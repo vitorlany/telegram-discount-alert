@@ -6,6 +6,7 @@ channels:
   - "-1001871700299"
   - "-1002703722182"
   - "-1001795013184"
+  - "-1001803446893"
 
 # Template placeholders: {product_name}, {chat_title}, {message_link}, {message_text}
 alert_template: |
