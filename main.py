@@ -95,15 +95,13 @@ async def handler(event):
             f"**Message:**\n{event.message.raw_text[:200]}..."
         )
         
-        # Send to Saved Messages (Me) - via Userbot (Silent)
-        await client.send_message('me', alert_text, link_preview=False)
-        print(f"Match found! Sent to Saved Messages.")
-
         # Send via Bot (Loud Notification)
         me = await client.get_me()
         if BOT_TOKEN:
             await send_via_bot(me.id, alert_text)
-            print("Sent push notification via Bot.")
+            print(f"Match found! Sent push notification via Bot for {match_name}.")
+        else:
+            print(f"Match found! But BOT_TOKEN is missing. Check your .env file.")
     else:
         print("No regex match.")
 
