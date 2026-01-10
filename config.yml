@@ -18,8 +18,6 @@ alert_template: |
 # Regex notes:
 # case_insensitive is assumed true in code logic unless specified otherwise
 products:
-  - name: "Test Product"
-    regex: "$"
   - name: "RTX 5070"
     regex: "5070"
   - name: "Logitech G923"
