@@ -19,9 +19,9 @@ alert_template: |
 # Regex notes:
 # case_insensitive is assumed true in code logic unless specified otherwise
 products:
-  - name: "Fonte"
-    regex: '\bfonte\s+(gold|platinum)\b'
   - name: "Logitech G923"
     regex: "G923"
+  - name: "Alienware"
+    regex: "AW2725DM"
   - name: "Whey"
     regex: "Whey"
