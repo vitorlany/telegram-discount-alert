@@ -20,8 +20,6 @@ alert_template: |
 # case_insensitive is assumed true in code logic unless specified otherwise
 products:
   - name: "Logitech G923"
-    regex: "G923"
-  - name: "Alienware"
-    regex: "AW2725DM"
+    regex: "G923|G29"
   - name: "Whey"
     regex: "Whey"
