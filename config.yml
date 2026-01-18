@@ -25,3 +25,5 @@ products:
   - name: "Whey"
     regex: "whey"
     counter_regex: "ftw"
+  - name: "Nautica Voyage"
+    regex: "NAUTICA VOYAGE"
