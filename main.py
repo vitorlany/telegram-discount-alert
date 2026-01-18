@@ -14,6 +14,8 @@ API_HASH = os.getenv('TG_API_HASH')
 SESSION_NAME = os.getenv('TG_SESSION_NAME', 'discount_bot')
 STRING_SESSION = os.getenv('TG_STRING_SESSION')
 
+PRICE_REGEX = r'(?i)(?:(?:POR:|Valor:|💰|-)?\s*R\$\s*|(?:POR:|Valor:)\s*)(\d+(?:[.,]\d+)*)'
+
 if not API_ID or not API_HASH:
     print("Error: TG_API_ID or TG_API_HASH not found in .env file.")
     exit(1)
@@ -97,10 +99,12 @@ async def handler(event):
         msg_id = event.id
         channel_id = extract_channel_id(event.chat_id)
         msg_link = f"https://t.me/c/{channel_id}/{msg_id}"
-        
-        # Get template from config
+        price_match = re.search(PRICE_REGEX, event.message.raw_text)
+        product_price = price_match.group(1) if price_match else "N/A"
+
         template = config.get('alert_template', 
             "**🚨 MATCH FOUND: {product_name}**\n\n"
+            "**Price:** {product_price}\n"
             "**Source:** {chat_title}\n"
             "**Link:** [Go to Message]({message_link})\n\n"
             "**Message:**\n{message_text}"
@@ -110,13 +114,14 @@ async def handler(event):
         try:
             alert_text = template.format(
                 product_name=match_name,
+                product_price=product_price,
                 chat_title=chat_title,
                 message_link=msg_link,
                 message_text=event.message.raw_text[:500] + ("..." if len(event.message.raw_text) > 500 else "")
             )
         except Exception as e:
             print(f"Error formatting template: {e}. Using fallback.")
-            alert_text = f"Match: {match_name}\nLink: {msg_link}"
+            alert_text = f"Match: {match_name}\nPrice: {product_price}\nLink: {msg_link}"
 
         # Send via Bot (Loud Notification)
         me = await client.get_me()

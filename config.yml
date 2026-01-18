@@ -11,7 +11,7 @@ channels:
 
 # Template placeholders: {product_name}, {chat_title}, {message_link}, {message_text}
 alert_template: |
-  **🚨 {product_name}**
+  **⭐ {product_name} - R$ {product_price}**
   {message_text}
 
   **Source:** {chat_title}
