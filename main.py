@@ -55,8 +55,11 @@ def check_match(text):
     
     for product in PRODUCTS:
         pattern = product['regex']
-        # Case insensitive search
         if re.search(pattern, text, re.IGNORECASE):
+            counter_pattern = product.get('counter_regex')
+            if counter_pattern and re.search(counter_pattern, text, re.IGNORECASE):
+                continue
+            
             return product['name']
     return None
 

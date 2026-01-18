@@ -23,4 +23,5 @@ products:
   - name: "Logitech G923"
     regex: "G923|G29"
   - name: "Whey"
-    regex: "Whey"
+    regex: "whey"
+    counter_regex: "ftw"
