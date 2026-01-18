@@ -100,7 +100,7 @@ async def handler(event):
         channel_id = extract_channel_id(event.chat_id)
         msg_link = f"https://t.me/c/{channel_id}/{msg_id}"
         price_match = re.search(PRICE_REGEX, event.message.raw_text)
-        product_price = price_match.group(1) if price_match else "N/A"
+        product_price = price_match.group(1) if price_match else None
 
         template = config.get('alert_template', 
             "**🚨 MATCH FOUND: {product_name}**\n\n"
