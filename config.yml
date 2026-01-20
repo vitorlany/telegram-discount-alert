@@ -27,4 +27,4 @@ products:
     regex: "whey"
     counter_regex: "ftw|one"
   - name: "Nautica Voyage"
-    regex: "NAUTICA VOYAGE"
+    regex: "NAUTICA"
