@@ -25,6 +25,6 @@ products:
     regex: "G923|G29"
   - name: "Whey"
     regex: "whey"
-    counter_regex: "ftw|one"
+    counter_regex: "ftw|one|max"
   - name: "Nautica Voyage"
     regex: "NAUTICA"
