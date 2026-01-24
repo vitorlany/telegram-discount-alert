@@ -15,6 +15,7 @@ SESSION_NAME = os.getenv('TG_SESSION_NAME', 'discount_bot')
 STRING_SESSION = os.getenv('TG_STRING_SESSION')
 
 PRICE_REGEX = r'(?i)(?:(?:POR:|Valor:|💰|-)?\s*R\$\s*|(?:POR:|Valor:)\s*)(\d+(?:[.,]\d+)*)'
+DISCOUNT_REGEX = r'(?i)(\d+\s*%)'
 
 if not API_ID or not API_HASH:
     print("Error: TG_API_ID or TG_API_HASH not found in .env file.")
@@ -116,6 +117,7 @@ async def handler(event):
     print(f"Message received in {event.chat_id}: {event.message.raw_text[:30]}...") # Debug print
 
     match_name = None
+    store_match = None
     
     # Check if message is from a product channel
     if event.chat_id in PRODUCT_CHANNELS:
@@ -123,26 +125,30 @@ async def handler(event):
     
     # If no match yet (or not a product channel), check if it's a coupon channel
     if not match_name and event.chat_id in COUPON_CHANNELS:
-        match_name = check_store_match(event.message.raw_text)
+        store_match = check_store_match(event.message.raw_text)
 
-    if match_name:
+    if match_name or store_match:
         chat = await event.get_chat()
         chat_title = chat.title if chat else 'Unknown'
         msg_id = event.id
         channel_id = extract_channel_id(event.chat_id)
         msg_link = f"https://t.me/c/{channel_id}/{msg_id}"
+    msg_id = event.id
+    channel_id = extract_channel_id(event.chat_id)
+    msg_link = f"https://t.me/c/{channel_id}/{msg_id}"
+    
+    alert_text = ""
+
+    if match_name: # Product Match
         price_match = re.search(PRICE_REGEX, event.message.raw_text)
-        product_price = price_match.group(1) if price_match else None
-
+        product_price = price_match.group(1) if price_match else "None"
+        
         template = config.get('alert_template', 
-            "**🚨 MATCH FOUND: {product_name}**\n\n"
-            "**Price:** {product_price}\n"
+            "**⭐ {product_name} - R$ {product_price}**\n"
+            "{message_text}\n\n"
             "**Source:** {chat_title}\n"
-            "**Link:** [Go to Message]({message_link})\n\n"
-            "**Message:**\n{message_text}"
+            "**Link:** [Go to Message]({message_link})"
         )
-
-        # Format alert message
         try:
             alert_text = template.format(
                 product_name=match_name,
@@ -152,18 +158,41 @@ async def handler(event):
                 message_text=event.message.raw_text[:500] + ("..." if len(event.message.raw_text) > 500 else "")
             )
         except Exception as e:
-            print(f"Error formatting template: {e}. Using fallback.")
+            print(f"Error formatting template: {e}")
             alert_text = f"Match: {match_name}\nPrice: {product_price}\nLink: {msg_link}"
 
-        # Send via Bot (Loud Notification)
-        me = await client.get_me()
-        if BOT_TOKEN:
-            await send_via_bot(me.id, alert_text)
-            print(f"Match found! Sent push notification via Bot for {match_name}.")
-        else:
-            print(f"Match found! But BOT_TOKEN is missing. Check your .env file.")
+    elif store_match: # Store/Coupon Match
+        discount_match = re.search(DISCOUNT_REGEX, event.message.raw_text)
+        discount_value = discount_match.group(1) if discount_match else "None"
+
+        template = config.get('coupon_alert_template',
+            "**🎟️ {store_name} - {discount_value}**\n"
+            "{message_text}\n\n"
+            "**Source:** {chat_title}\n"
+            "**Link:** [Go to Message]({message_link})"
+        )
+        try:
+            alert_text = template.format(
+                store_name=store_match,
+                discount_value=discount_value,
+                chat_title=chat_title,
+                message_link=msg_link,
+                message_text=event.message.raw_text[:500] + ("..." if len(event.message.raw_text) > 500 else "")
+            )
+        except Exception as e:
+            print(f"Error formatting coupon template: {e}")
+            alert_text = f"Coupon: {store_match}\nDiscount: {discount_value}\nLink: {msg_link}"
+
+    # Send via Bot (Loud Notification)
+    me = await client.get_me()
+    if BOT_TOKEN and alert_text:
+        await send_via_bot(me.id, alert_text)
+        print(f"Match found! Sent push notification via Bot.")
     else:
-        print("No regex match.")
+        if not BOT_TOKEN:
+            print(f"Match found! But BOT_TOKEN is missing. Check your .env file.")
+        elif not alert_text:
+            print("Match found but alert_text is empty.")
 
 def extract_channel_id(chat_id):
     # Helper to format channel ID for links (removes -100 prefix if present)
