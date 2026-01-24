@@ -18,6 +18,13 @@ alert_template: |
   **Source:** {chat_title}
   **Link:** [Go to Message]({message_link})
 
+coupon_alert_template: |
+  **🎟️ {store_name} - {discount_value}**
+  {message_text}
+
+  **Source:** {chat_title}
+  **Link:** [Go to Message]({message_link})
+
 # Regex notes:
 # case_insensitive is assumed true in code logic unless specified otherwise
 products:
@@ -28,3 +35,12 @@ products:
     counter_regex: "ftw|one|max"
   - name: "Controle PS5"
     regex: "\bControle\b.*?\bPS5\b"
+
+coupon_channels:
+  # Test channel
+  - "-1003596110991"
+  - "-1002703722182"
+
+stores:
+  - name: "Mercado Livre"
+    regex: '\bmercado\b.*?\blivre\b'

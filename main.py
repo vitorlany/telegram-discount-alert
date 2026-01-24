@@ -26,18 +26,26 @@ def load_config():
         return yaml.safe_load(f)
 
 config = load_config()
-raw_channels = config.get('channels', [])
-CHANNELS = []
-for ch in raw_channels:
-    if isinstance(ch, str) and (ch.startswith('-100') or ch.lstrip('-').isdigit()):
-        try:
-            CHANNELS.append(int(ch))
-        except ValueError:
-            CHANNELS.append(ch)
-    else:
-        CHANNELS.append(ch)
+
+def process_channels(raw_list):
+    processed = []
+    for ch in raw_list:
+        if isinstance(ch, str) and (ch.startswith('-100') or ch.lstrip('-').isdigit()):
+            try:
+                processed.append(int(ch))
+            except ValueError:
+                processed.append(ch)
+        else:
+            processed.append(ch)
+    return processed
+
+PRODUCT_CHANNELS = process_channels(config.get('channels', []))
+COUPON_CHANNELS = process_channels(config.get('coupon_channels', []))
+# Combine lists, removing duplicates
+ALL_CHANNELS = list(set(PRODUCT_CHANNELS + COUPON_CHANNELS))
 
 PRODUCTS = config.get('products', [])
+STORES = config.get('stores', [])
 
 # Create the client and start it
 if STRING_SESSION:
@@ -63,6 +71,21 @@ def check_match(text):
                 continue
             
             return product['name']
+            return product['name']
+    return None
+
+def check_store_match(text):
+    """
+    Checks if the message text matches any of the store regexes.
+    Returns the matching store name matches, otherwise None.
+    """
+    if not text:
+        return None
+    
+    for store in STORES:
+        pattern = store['regex']
+        if re.search(pattern, text, re.IGNORECASE):
+            return store['name']
     return None
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
@@ -85,14 +108,23 @@ async def send_via_bot(user_id, message):
         except Exception as e:
             print(f"Error sending bot alert: {e}")
 
-@client.on(events.NewMessage(chats=CHANNELS))
+@client.on(events.NewMessage(chats=ALL_CHANNELS))
 async def handler(event):
     if not event.message.raw_text:
         return
     
     print(f"Message received in {event.chat_id}: {event.message.raw_text[:30]}...") # Debug print
 
-    match_name = check_match(event.message.raw_text)
+    match_name = None
+    
+    # Check if message is from a product channel
+    if event.chat_id in PRODUCT_CHANNELS:
+        match_name = check_match(event.message.raw_text)
+    
+    # If no match yet (or not a product channel), check if it's a coupon channel
+    if not match_name and event.chat_id in COUPON_CHANNELS:
+        match_name = check_store_match(event.message.raw_text)
+
     if match_name:
         chat = await event.get_chat()
         chat_title = chat.title if chat else 'Unknown'
@@ -147,8 +179,8 @@ async def main():
     await client.get_dialogs()
     
     # Print loaded config for debugging
-    print(f"Monitoring {len(CHANNELS)} channels.")
-    print(f"Tracking {len(PRODUCTS)} products.")
+    print(f"Monitoring {len(PRODUCT_CHANNELS)} product channels and {len(COUPON_CHANNELS)} coupon channels.")
+    print(f"Tracking {len(PRODUCTS)} products and {len(STORES)} stores.")
     
     await client.start()
     await client.run_until_disconnected()
