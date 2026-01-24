@@ -25,6 +25,6 @@ products:
     regex: "G923|G29"
   - name: "Whey"
     regex: "whey"
-    counter_regex: "ftw"
+    counter_regex: "ftw|one|max"
   - name: "Controle PS5"
     regex: "\bControle\b.*?\bPS5\b"
