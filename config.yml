@@ -21,10 +21,10 @@ alert_template: |
 # Regex notes:
 # case_insensitive is assumed true in code logic unless specified otherwise
 products:
-  - name: "Logitech G923"
+  - name: "Volante Logitech"
     regex: "G923|G29"
   - name: "Whey"
     regex: "whey"
     counter_regex: "ftw"
-  - name: "Nautica Voyage"
-    regex: "NAUTICA VOYAGE"
+  - name: "Controle PS5"
+    regex: "\bControle\b.*?\bPS5\b"
