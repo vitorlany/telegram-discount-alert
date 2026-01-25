@@ -46,3 +46,5 @@ coupon_channels:
 stores:
   - name: "Mercado Livre"
     regex: '\bmercado\b.*?\blivre\b'
+  - name: "Shopee"
+    regex: "shopee"
