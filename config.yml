@@ -35,6 +35,8 @@ products:
     counter_regex: "ftw|one|max"
   - name: "Controle PS5"
     regex: "\bControle\b.*?\bPS5\b"
+  - name: "Controle 8bitdo"
+    regex: "8BitDo Ultimate"
 
 coupon_channels:
   # Test channel
