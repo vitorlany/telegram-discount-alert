@@ -2,3 +2,4 @@ telethon
 python-dotenv
 pyyaml
 aiohttp
+questionary
