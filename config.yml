@@ -32,7 +32,7 @@ products:
     regex: "G923|G29"
   - name: "Whey"
     regex: "whey"
-    counter_regex: "ftw|one|max"
+    counter_regex: "ftw|one|max|pasta"
   - name: "Controle 8bitdo"
     regex: "8BitDo Ultimate"
 
