@@ -33,6 +33,8 @@ products:
   - name: "Whey"
     regex: "whey"
     counter_regex: "ftw|one|max|pasta|Integralmédica"
+  - name: "Power Bank"
+    regex: "power bank"
 
 coupon_channels:
   # Test channel
