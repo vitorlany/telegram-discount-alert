@@ -39,6 +39,6 @@ coupon_channels:
   - "-1003596110991"
   - "-1002703722182"
 
-#stores:
-#  - name: "Mercado Livre"
-#    regex: '\bmercado\b.*?\blivre\b'
+stores:
+  - name: "Mercado Livre"
+    regex: '\bmercado\b.*?\blivre\b'
