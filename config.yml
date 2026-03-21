@@ -32,7 +32,7 @@ products:
     regex: "G923|G29"
   - name: "Whey"
     regex: "whey"
-    counter_regex: "ftw|one|max|pasta|Integralmédica|growth"
+    counter_regex: "ftw|one|max|pasta|Integralmédica|growth|fuse|soja|soy"
 
 coupon_channels:
   # Test channel
