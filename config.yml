@@ -31,6 +31,8 @@ products:
   - name: "Whey"
     regex: "whey"
     counter_regex: "ftw|one|max|pasta|Integralmédica|growth|fuse|soja|soy"
+  - name: "webcam"
+    regex: "webcam"
 
 coupon_channels:
   # Test channel
